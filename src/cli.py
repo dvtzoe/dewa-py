@@ -1,4 +1,5 @@
 import argparse
+import os
 
 from src._global import g
 from src.main import main
@@ -18,7 +19,7 @@ def cli() -> None:
         "--output",
         type=str,
         help="Output file name",
-        default="output.wav",
+        default=os.path.join("out", "Untitled.wav"),
     )
     _ = parser.add_argument(
         "-v",

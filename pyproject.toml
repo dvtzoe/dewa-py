@@ -13,6 +13,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "numpy>=2.3.2",
+    "scipy>=1.16.1",
 ]
 
 [project.scripts]
@@ -20,3 +21,8 @@ dewa = "src.cli:cli"
 
 [tool.setuptools.packages]
 find = {}
+
+[dependency-groups]
+dev = [
+    "scipy-stubs>=1.16.1.1",
+]
