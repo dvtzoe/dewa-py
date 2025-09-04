@@ -6,7 +6,7 @@ from src.main import main
 
 def cli() -> None:
     parser = argparse.ArgumentParser(
-        prog="final_cli", description="KOSEN Programming-3's final project CLI"
+        prog="dewa", description="Waveform synthesizer CLI"
     )
     _ = parser.add_argument(
         "filename",
