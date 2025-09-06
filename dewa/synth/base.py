@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from .modifiers import Modifier
+from .modifiers.base import Modifier
 
 
 class Dewa:
@@ -35,4 +35,3 @@ class Dewa:
             added = self + other.render(dur=self.dur)
 
         return added
-
