@@ -1,6 +1,6 @@
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+requires = ["uv_build>=0.8.15,<0.9.0"]
+build-backend = "uv_build"
 
 [project]
 name = "dewa-py"
@@ -16,11 +16,9 @@ dependencies = [
     "scipy>=1.16.1",
 ]
 
-[project.scripts]
-dewa = "src.cli:cli"
-
-[tool.setuptools.packages]
-find = {}
+[tool.uv.build-backend]
+module-name = "dewa"
+module-root = ""
 
 [dependency-groups]
 dev = [

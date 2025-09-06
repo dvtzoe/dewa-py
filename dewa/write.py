@@ -5,7 +5,7 @@ from scipy.io import wavfile
 from ._global import g
 
 
-def main():
+def write():
     if g.verbose:
         print("Verbose mode enabled")
 
