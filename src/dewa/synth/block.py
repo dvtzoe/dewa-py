@@ -56,3 +56,12 @@ class Block:
         new_block = Block(self.duration_seconds, self.sample_rate, self.dtype)
         new_block.samples = np.flip(self.samples)
         return new_block
+
+    def repeat(self, times: int) -> Block:
+        if not isinstance(times, int) or times <= 0:
+            raise ValueError("Times must be a positive integer.")
+
+        new_duration = self.duration_seconds * times
+        new_block = Block(new_duration, self.sample_rate, self.dtype)
+        new_block.samples = np.tile(self.samples, times)
+        return new_block
