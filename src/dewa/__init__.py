@@ -1,3 +1,4 @@
+from .io import from_file
 from .render import write
 from .synth import (
     Block,
@@ -8,4 +9,13 @@ from .synth import (
     Triangle,
 )
 
-__all__ = ["Block", "Sine", "LinearRamp", "write", "Square", "Sawtooth", "Triangle"]
+__all__ = [
+    "Block",
+    "Sine",
+    "LinearRamp",
+    "write",
+    "Square",
+    "Sawtooth",
+    "Triangle",
+    "from_file",
+]
