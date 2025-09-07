@@ -29,6 +29,14 @@ def main():
         print(f"Loaded audio from '{input_audio_path}'.")
         main_block.mount(imported_block, at_time=0.0)
 
+        # Create a reversed version of the imported block
+        reversed_block = imported_block.reverse()
+        main_block.mount(reversed_block, at_time=3.0)
+
+        # Create an inverted version of the imported block
+        inverted_block = -imported_block
+        main_block.mount(inverted_block, at_time=6.0)
+
     # 3. Create a square wave note.
     note_square = Block(duration_seconds=0.5, sample_rate=sample_rate)
     note_square += Square(440)
@@ -36,11 +44,11 @@ def main():
     print("Created a 0.5-second 440 Hz square wave note.")
 
     # 4. Mount the blocks onto the main canvas.
-    main_block.mount(note_square, at_time=4.0)
+    main_block.mount(note_square, at_time=9.0)
     print("Mounted all notes onto the main block.")
 
     # 5. Save the final audio to a file.
-    output_filename = os.path.join(output_folder, "output-ai-3.mp3")
+    output_filename = os.path.join(output_folder, "output-ai-4.mp3")
     write(main_block, output_filename, sample_rate=sample_rate)
     print(f"Successfully saved the final audio to '{output_filename}'.")
     print(f"You can now listen to the {output_filename} file.")

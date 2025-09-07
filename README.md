@@ -132,6 +132,23 @@ block += Sine(440)
 block *= LinearRamp(start=1.0, end=0.0) # Fade out
 ```
 
+## Operations                                                                                                                                 │
+### Reverse                                                                                                                                   │
+                                                                                                                                              │
+Reverses the audio block.                                                                                                                     │
+                                                                                                                                              │
+```python                                                                                                                                     │
+reversed_block = block.reverse()                                                                                                              │
+```                                                                                                                                           │
+                                                                                                                                              │
+### Invert                                                                                                                                    │
+                                                                                                                                              │
+Inverts the phase of the audio block.                                                                                                         │
+                                                                                                                                              │
+```python                                                                                                                                     │
+inverted_block = -block                                                                                                                       │
+```                                                                                                                                           │
+
 ## Loading Audio
 
 You can load audio from any file format supported by ffmpeg using the `from_file` function.

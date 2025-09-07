@@ -28,6 +28,11 @@ class Block:
     def __mul__(self, other: Any):  # pyright: ignore[reportAny,reportExplicitAny]
         return other.apply(self, "multiply")  # pyright: ignore[reportAny]
 
+    def __neg__(self) -> Block:
+        new_block = Block(self.duration_seconds, self.sample_rate, self.dtype)
+        new_block.samples = -self.samples
+        return new_block
+
     def mount(self, other_block: Block, at_time: float = 0.0):
         start_sample = int(at_time * self.sample_rate)
         if start_sample >= self.num_samples:
@@ -45,4 +50,9 @@ class Block:
     def __radd__(self, other: int | float):
         new_block = Block(self.duration_seconds, self.sample_rate, self.dtype)
         new_block.samples = other + self.samples
+        return new_block
+
+    def reverse(self) -> Block:
+        new_block = Block(self.duration_seconds, self.sample_rate, self.dtype)
+        new_block.samples = np.flip(self.samples)
         return new_block
