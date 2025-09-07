@@ -3,10 +3,7 @@ import os
 from dewa import (
     Block,
     LinearRamp,
-    Sawtooth,
-    Sine,
     Square,
-    Triangle,
     from_file,
     write,
 )
