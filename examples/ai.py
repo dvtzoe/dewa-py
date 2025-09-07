@@ -1,3 +1,5 @@
+import os
+
 from dewa import (
     Block,
     LinearRamp,
@@ -75,7 +77,7 @@ def main():
     print("Mounted all notes onto the main block.")
 
     # 9. Save the final audio to a file.
-    output_filename = "output-ai.wav"
+    output_filename = os.path.join("out", "output-ai.wav")
     write(main_block, output_filename)
     print(f"Successfully saved the final audio to '{output_filename}'.")
     print("You can now listen to the output-ai.wav file.")
