@@ -8,6 +8,10 @@ from .base import Modifier
 
 
 class Sawtooth(Modifier):
+    """
+    Sawtooth wave generator.
+    """
+
     def __init__(self, frequency: float | Block):
         self.frequency: float | Block = frequency
 

@@ -10,6 +10,10 @@ if TYPE_CHECKING:
 
 
 class Modifier(ABC):
+    """
+    Base class for all modifiers.
+    """
+
     @abstractmethod
     def _generate_wave(self, block: Block) -> np.ndarray:
         """

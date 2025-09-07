@@ -6,6 +6,10 @@ import numpy as np
 
 
 class Block:
+    """
+    Represents a block of audio samples.
+    """
+
     def __init__(
         self,
         duration_seconds: float,

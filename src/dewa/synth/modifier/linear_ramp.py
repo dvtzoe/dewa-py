@@ -7,6 +7,10 @@ from .base import Modifier
 
 
 class LinearRamp(Modifier):
+    """
+    Linear ramp generator.
+    """
+
     def __init__(self, start: float, end: float):
         self.start: float = start
         self.end: float = end

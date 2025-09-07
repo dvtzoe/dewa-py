@@ -8,6 +8,10 @@ from .base import Modifier
 
 
 class Triangle(Modifier):
+    """
+    Triangle wave generator.
+    """
+
     def __init__(self, frequency: float | Block):
         self.frequency: float | Block = frequency
 
