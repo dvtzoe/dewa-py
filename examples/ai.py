@@ -1,4 +1,12 @@
-from dewa import Block, LinearRamp, Sine, write
+from dewa import (
+    Block,
+    LinearRamp,
+    Sawtooth,
+    Sine,
+    Square,
+    Triangle,
+    write,
+)
 
 
 def main():
@@ -8,9 +16,9 @@ def main():
     # Global settings
     sample_rate = 44100
 
-    # 1. Create a main canvas block of 3 seconds.
-    main_block = Block(duration_seconds=3.0, sample_rate=sample_rate)
-    print("Created a 3-second main block.")
+    # 1. Create a main canvas block of 5 seconds.
+    main_block = Block(duration_seconds=5.0, sample_rate=sample_rate)
+    print("Created a 5-second main block.")
 
     # 2. Create the first note: A4 (440 Hz) for 1 second.
     note_a4 = Block(duration_seconds=1.0, sample_rate=sample_rate)
@@ -39,17 +47,38 @@ def main():
     carrier_note *= LinearRamp(1.0, 0.0)
     print("Created a 1-second note with a 5 Hz vibrato effect.")
 
-    # 5. Mount the blocks onto the main canvas.
+    # 5. Create a square wave note.
+    note_square = Block(duration_seconds=0.5, sample_rate=sample_rate)
+    note_square += Square(220)
+    note_square *= LinearRamp(start=1.0, end=0.0)
+    print("Created a 0.5-second 220 Hz square wave note.")
+
+    # 6. Create a sawtooth wave note.
+    note_sawtooth = Block(duration_seconds=0.5, sample_rate=sample_rate)
+    note_sawtooth += Sawtooth(220)
+    note_sawtooth *= LinearRamp(start=1.0, end=0.0)
+    print("Created a 0.5-second 220 Hz sawtooth wave note.")
+
+    # 7. Create a triangle wave note.
+    note_triangle = Block(duration_seconds=0.5, sample_rate=sample_rate)
+    note_triangle += Triangle(220)
+    note_triangle *= LinearRamp(start=1.0, end=0.0)
+    print("Created a 0.5-second 220 Hz triangle wave note.")
+
+    # 8. Mount the blocks onto the main canvas.
     main_block.mount(note_a4, at_time=0.0)
     main_block.mount(note_e5, at_time=1.0)
     main_block.mount(carrier_note, at_time=1.75)
+    main_block.mount(note_square, at_time=3.0)
+    main_block.mount(note_sawtooth, at_time=3.5)
+    main_block.mount(note_triangle, at_time=4.0)
     print("Mounted all notes onto the main block.")
 
-    # 6. Save the final audio to a file.
-    output_filename = "output.wav"
-    write(note_a4, output_filename)
+    # 9. Save the final audio to a file.
+    output_filename = "output-ai.wav"
+    write(main_block, output_filename)
     print(f"Successfully saved the final audio to '{output_filename}'.")
-    print("You can now listen to the output.wav file.")
+    print("You can now listen to the output-ai.wav file.")
 
 
 if __name__ == "__main__":
