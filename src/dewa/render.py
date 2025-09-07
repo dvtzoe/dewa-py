@@ -23,7 +23,11 @@ def write(data: Block, filename: str, sample_rate: int = 44100):
                 ar=str(sample_rate),
             )
             .output(filename, format="wav")
-            .run(input=data.samples.astype(np.float32).tobytes(), capture_stdout=True, capture_stderr=True)
+            .run(
+                input=data.samples.astype(np.float32).tobytes(),
+                capture_stdout=True,
+                capture_stderr=True,
+            )
         )
     except ffmpeg.Error as e:
         print("ffmpeg stderr:", e.stderr.decode())
