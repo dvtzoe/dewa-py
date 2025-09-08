@@ -12,15 +12,20 @@ class Block:
 
     def __init__(
         self,
-        duration_seconds: float,
+        duration: int | None = None,
         sample_rate: int = 44100,
         dtype: type = np.float32,
     ):
         self.sample_rate: int = sample_rate
         self.dtype: type = dtype
-        self.duration_seconds: float = duration_seconds
-        self.num_samples: int = int(self.duration_seconds * self.sample_rate)
-        self.samples: np.ndarray = np.zeros(self.num_samples, dtype=self.dtype)
+        self.dynamic_duration: bool = duration is None
+
+        self.duration: int = 0 if duration is None else duration
+        self.samples: np.ndarray = (
+            np.array([], dtype=self.dtype)
+            if duration is None
+            else np.zeros(self.duration, dtype=self.dtype)
+        )
 
     def __add__(self, other: Any):  # pyright: ignore[reportAny,reportExplicitAny]
         return other.apply(self, "add")  # pyright: ignore[reportAny]
@@ -29,31 +34,30 @@ class Block:
         return other.apply(self, "multiply")  # pyright: ignore[reportAny]
 
     def __neg__(self) -> Block:
-        new_block = Block(self.duration_seconds, self.sample_rate, self.dtype)
+        new_block = Block(self.duration, self.sample_rate, self.dtype)
         new_block.samples = -self.samples
         return new_block
 
-    def mount(self, other_block: Block, at_time: float = 0.0):
-        start_sample = int(at_time * self.sample_rate)
-        if start_sample >= self.num_samples:
-            return self
-        num_samples_to_add = min(
-            other_block.num_samples, self.num_samples - start_sample
+    def mount(self, other_block: Block, mount_point: int = 0):
+        if self.dynamic_duration or self.duration < mount_point + other_block.duration:
+            required_samples = mount_point + other_block.duration
+            if required_samples > self.duration:
+                self.samples = np.resize(self.samples, required_samples)
+                self.duration = required_samples
+
+        self.samples[mount_point : mount_point + other_block.duration] += (
+            other_block.samples
         )
-        if num_samples_to_add > 0:
-            end_sample = start_sample + num_samples_to_add
-            self.samples[start_sample:end_sample] += other_block.samples[
-                :num_samples_to_add
-            ]
+
         return self
 
     def __radd__(self, other: int | float):
-        new_block = Block(self.duration_seconds, self.sample_rate, self.dtype)
+        new_block = Block(self.duration, self.sample_rate, self.dtype)
         new_block.samples = other + self.samples
         return new_block
 
     def reverse(self) -> Block:
-        new_block = Block(self.duration_seconds, self.sample_rate, self.dtype)
+        new_block = Block(self.duration, self.sample_rate, self.dtype)
         new_block.samples = np.flip(self.samples)
         return new_block
 
@@ -61,7 +65,7 @@ class Block:
         if not isinstance(times, int) or times <= 0:
             raise ValueError("Times must be a positive integer.")
 
-        new_duration = self.duration_seconds * times
+        new_duration = self.duration * times
         new_block = Block(new_duration, self.sample_rate, self.dtype)
         new_block.samples = np.tile(self.samples, times)
         return new_block

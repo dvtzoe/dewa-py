@@ -35,9 +35,7 @@ def from_file(file_path: str | Path, sample_rate: int = 44100) -> Block:
         print("ffmpeg stderr:", e.stderr.decode())
         raise
 
-    duration_seconds = len(audio_data) / sample_rate
-
-    block = Block(duration_seconds=duration_seconds, sample_rate=sample_rate)
+    block = Block(duration=len(audio_data), sample_rate=sample_rate)
     block.samples = audio_data
 
     return block
