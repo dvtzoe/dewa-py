@@ -1,6 +1,5 @@
-from .io import from_file
-from .synth import (
-    Block,
+from .block import Block
+from .modifier import (
     Echo,
     LinearRamp,
     Sawtooth,
@@ -9,17 +8,14 @@ from .synth import (
     Tremolo,
     Triangle,
 )
-from .write import write
 
 __all__ = [
     "Block",
     "Sine",
     "LinearRamp",
-    "write",
     "Square",
     "Sawtooth",
     "Triangle",
-    "from_file",
     "Echo",
     "Tremolo",
 ]
