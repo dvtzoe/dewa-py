@@ -1,5 +1,4 @@
 from .io import from_file
-from .render import write
 from .synth import (
     Block,
     Echo,
@@ -10,6 +9,7 @@ from .synth import (
     Tremolo,
     Triangle,
 )
+from .write import write
 
 __all__ = [
     "Block",
