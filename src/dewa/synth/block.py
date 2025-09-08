@@ -13,10 +13,8 @@ class Block:
     def __init__(
         self,
         duration: int | None = None,
-        sample_rate: int = 44100,
         dtype: type = np.float32,
     ):
-        self.sample_rate: int = sample_rate
         self.dtype: type = dtype
         self.dynamic_duration: bool = duration is None
 
@@ -34,7 +32,7 @@ class Block:
         return other.apply(self, "multiply")  # pyright: ignore[reportAny]
 
     def __neg__(self) -> Block:
-        new_block = Block(self.duration, self.sample_rate, self.dtype)
+        new_block = Block(self.duration, self.dtype)
         new_block.samples = -self.samples
         return new_block
 
@@ -52,12 +50,12 @@ class Block:
         return self
 
     def __radd__(self, other: int | float):
-        new_block = Block(self.duration, self.sample_rate, self.dtype)
+        new_block = Block(self.duration, self.dtype)
         new_block.samples = other + self.samples
         return new_block
 
     def reverse(self) -> Block:
-        new_block = Block(self.duration, self.sample_rate, self.dtype)
+        new_block = Block(self.duration, self.dtype)
         new_block.samples = np.flip(self.samples)
         return new_block
 
@@ -66,6 +64,6 @@ class Block:
             raise ValueError("Times must be a positive integer.")
 
         new_duration = self.duration * times
-        new_block = Block(new_duration, self.sample_rate, self.dtype)
+        new_block = Block(new_duration, self.dtype)
         new_block.samples = np.tile(self.samples, times)
         return new_block

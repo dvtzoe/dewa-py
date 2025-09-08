@@ -23,7 +23,7 @@ class Modifier(ABC):
     """
 
     @abstractmethod
-    def _generate_wave(self, block: Block) -> np.ndarray:
+    def _generate(self, block: Block) -> np.ndarray:
         """
         Abstract method for concrete modifiers to implement.
         Should return a numpy array of the same length as the block.
@@ -31,7 +31,7 @@ class Modifier(ABC):
         raise NotImplementedError
 
     def apply(self, block: Block, operation: str) -> Block:
-        wave = self._generate_wave(block)
+        wave = self._generate(block)
 
         if wave.shape != block.samples.shape:
             raise ValueError("Generated wave shape does not match block samples shape.")

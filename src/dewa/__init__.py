@@ -4,7 +4,6 @@ from .synth import (
     Block,
     Echo,
     LinearRamp,
-    RingMod,
     Sawtooth,
     Sine,
     Square,
@@ -23,5 +22,4 @@ __all__ = [
     "from_file",
     "Echo",
     "Tremolo",
-    "RingMod",
 ]

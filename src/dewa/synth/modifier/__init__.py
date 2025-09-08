@@ -1,7 +1,6 @@
 from .base import Modifier
 from .echo import Echo
 from .linear_ramp import LinearRamp
-from .ring_mod import RingMod
 from .sawtooth import Sawtooth
 from .sine import Sine
 from .square import Square
@@ -17,5 +16,4 @@ __all__ = [
     "Triangle",
     "Echo",
     "Tremolo",
-    "RingMod",
 ]

@@ -4,11 +4,11 @@ from dewa import Block, Sine, write
 
 sample_rate = 48000
 
-main_block = Block(sample_rate=sample_rate)
+main_block = Block()
 
 simple_sine = Sine(frequency=440)
 
-idk = Block(duration=1, sample_rate=sample_rate)
+idk = Block(duration=1 * sample_rate)
 idk += simple_sine
 idk.repeat(3)
 

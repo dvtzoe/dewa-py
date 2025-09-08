@@ -2,11 +2,10 @@ from .block import Block
 from .modifier import (
     Echo,
     LinearRamp,
-    RingMod,
     Sawtooth,
     Sine,
-    Tremolo,
     Square,
+    Tremolo,
     Triangle,
 )
 
@@ -19,5 +18,4 @@ __all__ = [
     "Triangle",
     "Echo",
     "Tremolo",
-    "RingMod",
 ]

@@ -16,12 +16,12 @@ class LinearRamp(Modifier):
     """
 
     def __init__(self, start: float, end: float):
-        self.start: float = start
-        self.end: float = end
+        self.start = start
+        self.end = end
 
     @override
-    def _generate_wave(self, block: Block) -> np.ndarray:
-        ramp: np.ndarray = np.linspace(  # pyright: ignore[reportUnknownVariableType]
+    def _generate(self, block: Block) -> np.ndarray:
+        ramp: np.ndarray = np.linspace(
             self.start, self.end, block.duration, endpoint=False, dtype=block.dtype
         )
         return ramp
