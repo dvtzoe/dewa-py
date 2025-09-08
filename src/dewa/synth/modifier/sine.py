@@ -16,10 +16,10 @@ class Sine(Modifier):
 
     @override
     def _generate_wave(self, block: Block) -> np.ndarray:
-        t = np.linspace(0.0, block.duration_seconds, block.num_samples, endpoint=False)
+        t = np.linspace(0.0, block.duration, block.duration, endpoint=False)
         if isinstance(self.frequency, Block):
-            if self.frequency.num_samples != block.num_samples:
-                mod_samples = np.resize(self.frequency.samples, block.num_samples)
+            if self.frequency.duration != block.duration:
+                mod_samples = np.resize(self.frequency.samples, block.duration)
             else:
                 mod_samples = self.frequency.samples
             phase = 2 * np.pi * np.cumsum(mod_samples) / block.sample_rate

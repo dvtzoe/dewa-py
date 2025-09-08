@@ -8,7 +8,11 @@ from .base import Modifier
 
 class LinearRamp(Modifier):
     """
-    Linear ramp generator.
+    Generates a linear ramp from start to end over the duration of the block.
+
+    Parameters:
+        start: float => The starting value of the ramp.
+        end: float => The ending value of the ramp.
     """
 
     def __init__(self, start: float, end: float):
@@ -18,6 +22,6 @@ class LinearRamp(Modifier):
     @override
     def _generate_wave(self, block: Block) -> np.ndarray:
         ramp: np.ndarray = np.linspace(  # pyright: ignore[reportUnknownVariableType]
-            self.start, self.end, block.num_samples, endpoint=False, dtype=block.dtype
+            self.start, self.end, block.duration, endpoint=False, dtype=block.dtype
         )
         return ramp
