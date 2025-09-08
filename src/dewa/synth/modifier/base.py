@@ -14,12 +14,6 @@ class Modifier(ABC):
     Base class for all modifiers.
     Modifiers can apply transformations to audio blocks by generating a wave
     and either adding or multiplying it with the block's samples.
-
-    Methods:
-        _generate_wave(block: Block) -> np.ndarray:
-            Abstract method to generate the modulating wave.
-        apply(block: Block, operation: str) -> Block:
-            Applies the generated wave to the block's samples using the specified operation.
     """
 
     @abstractmethod
@@ -30,15 +24,12 @@ class Modifier(ABC):
         """
         raise NotImplementedError
 
-    def apply(self, block: Block, operation: str) -> Block:
-        wave = self._generate(block)
+    def __add__(self, other: Block) -> Block:
+        wave = self._generate(other)
+        other.samples += wave
+        return other
 
-        if wave.shape != block.samples.shape:
-            raise ValueError("Generated wave shape does not match block samples shape.")
-
-        if operation == "add":
-            block.samples += wave
-        elif operation == "multiply":
-            block.samples *= wave
-
-        return block
+    def __mul__(self, other: Block) -> Block:
+        wave = self._generate(other)
+        other.samples *= wave
+        return other

@@ -1,8 +1,11 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
+
+if TYPE_CHECKING:
+    from .modifier.base import Modifier
 
 
 class Block:
@@ -25,11 +28,19 @@ class Block:
             else np.zeros(self.duration, dtype=self.dtype)
         )
 
-    def __add__(self, other: Any):  # pyright: ignore[reportAny,reportExplicitAny]
-        return other.apply(self, "add")  # pyright: ignore[reportAny]
+    def __add__(self, other: Modifier | float | int | np.ndarray):
+        if isinstance(other, (int, float, np.ndarray)):
+            new_block = Block(self.duration, self.dtype)
+            new_block.samples = self.samples + other
+            return new_block
+        return other + self
 
-    def __mul__(self, other: Any):  # pyright: ignore[reportAny,reportExplicitAny]
-        return other.apply(self, "multiply")  # pyright: ignore[reportAny]
+    def __mul__(self, other: Modifier | float | int | np.ndarray):
+        if isinstance(other, (int, float, np.ndarray)):
+            new_block = Block(self.duration, self.dtype)
+            new_block.samples = self.samples * other
+            return new_block
+        return other * self
 
     def __neg__(self) -> Block:
         new_block = Block(self.duration, self.dtype)
