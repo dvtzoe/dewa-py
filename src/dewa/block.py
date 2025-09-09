@@ -15,11 +15,10 @@ class Block:
 
     def __init__(
         self,
-        duration: int | None = None,
+        duration: int = 0,
         dtype: type = np.float32,
     ):
         self.dtype: type = dtype
-        self.dynamic_duration: bool = duration is None
 
         self.duration: int = 0 if duration is None else duration
         self.samples: np.ndarray = (
@@ -48,7 +47,7 @@ class Block:
         return new_block
 
     def mount(self, other_block: Block, mount_point: int = 0):
-        if self.dynamic_duration or self.duration < mount_point + other_block.duration:
+        if self.duration < mount_point + other_block.duration:
             required_samples = mount_point + other_block.duration
             if required_samples > self.duration:
                 self.samples = np.resize(self.samples, required_samples)
