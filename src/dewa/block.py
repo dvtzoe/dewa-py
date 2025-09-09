@@ -53,6 +53,10 @@ class Block:
 
         return self
 
+    def concat(self, other_block: Block | np.ndarray) -> Block:
+        concatenated_samples = np.concatenate((self.samples, other_block))
+        return Block(concatenated_samples, dtype=self.dtype)
+
     def __array__(self) -> np.ndarray:
         return self.samples
 
