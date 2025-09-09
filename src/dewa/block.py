@@ -24,7 +24,7 @@ class Block:
         if samples is not None:
             self.samples = samples.astype(self.dtype)
         else:
-            self.samples = np.zeros(self.duration, dtype=self.dtype)
+            self.samples = np.zeros(duration, dtype=self.dtype)
 
     def __add__(self, other: Modifier | float | int | np.ndarray):
         if isinstance(other, (int, float, np.ndarray)):
@@ -38,14 +38,10 @@ class Block:
             return other * self
         return Block(self.samples * other, dtype=self.dtype)
 
-    def __neg__(self) -> Block:
-        return Block(-self.samples, dtype=self.dtype)
-
     def mount(self, other_block: Block, mount_point: int = 0):
         if self.duration < mount_point + other_block.duration:
             required_samples = mount_point + other_block.duration
-            if required_samples > self.duration:
-                self.samples = np.resize(self.samples, required_samples)
+            self.samples = np.resize(self, required_samples)
 
         self.samples[mount_point : mount_point + other_block.duration] += (
             other_block.samples
@@ -53,15 +49,18 @@ class Block:
 
         return self
 
-    def reverse(self) -> Block:
-        return Block(np.flip(self.samples), dtype=self.dtype)
-
-    def repeat(self, times: int) -> Block:
-        return Block(np.tile(self.samples, times), dtype=self.dtype)
-
-    def __len__(self) -> int:
-        return len(self.samples)
+    def __array__(self):
+        return self.samples
 
     @property
     def duration(self) -> int:
         return len(self.samples)
+
+    # @property
+    # def __array_interface__(self):
+    #     return {
+    #         "shape": self.samples.shape,
+    #         "typestr": self.samples.dtype.str,
+    #         "data": (self.samples.ctypes.data, False),
+    #         "version": 3,
+    #     }
