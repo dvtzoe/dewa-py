@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import numpy as np
 
 if TYPE_CHECKING:
-    from .modifier.base import Modifier
+    from .modifiers.base import Modifier
 
 
 class Block:

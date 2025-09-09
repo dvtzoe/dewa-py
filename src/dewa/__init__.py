@@ -1,7 +1,7 @@
 import io
 
 from .block import Block
-from .modifier import (
+from .modifiers import (
     Echo,
     LinearRamp,
     Sawtooth,
