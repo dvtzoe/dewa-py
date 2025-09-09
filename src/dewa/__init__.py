@@ -7,18 +7,14 @@ from .modifier import (
     Sawtooth,
     Sine,
     Square,
-    Tremolo,
-    Triangle,
 )
 
 __all__ = [
-    "Block",
-    "Sine",
-    "LinearRamp",
-    "Square",
-    "Sawtooth",
-    "Triangle",
-    "Echo",
-    "Tremolo",
     "io",
+    "Block",
+    "Echo",
+    "LinearRamp",
+    "Sawtooth",
+    "Sine",
+    "Square",
 ]
