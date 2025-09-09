@@ -28,9 +28,7 @@ class Block:
 
     def __add__(self, other: Modifier | float | int | np.ndarray):
         if isinstance(other, (int, float, np.ndarray)):
-            new_block = Block(dtype=self.dtype)
-            new_block.samples = self.samples + other
-            return new_block
+            return Block(self.samples + other, dtype=self.dtype)
         return other + self
 
     def __mul__(self, other: Modifier | float | int | np.ndarray):
@@ -55,12 +53,3 @@ class Block:
     @property
     def duration(self) -> int:
         return len(self.samples)
-
-    # @property
-    # def __array_interface__(self):
-    #     return {
-    #         "shape": self.samples.shape,
-    #         "typestr": self.samples.dtype.str,
-    #         "data": (self.samples.ctypes.data, False),
-    #         "version": 3,
-    #     }
