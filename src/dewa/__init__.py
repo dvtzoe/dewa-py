@@ -1,5 +1,5 @@
 from .block import Block
-from .io import from_file, write
+from .io import read, write
 from .modifier import (
     Echo,
     LinearRamp,
@@ -19,6 +19,6 @@ __all__ = [
     "Triangle",
     "Echo",
     "Tremolo",
-    "from_file",
+    "read",
     "write",
 ]

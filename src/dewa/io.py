@@ -8,7 +8,7 @@ import numpy as np
 from .block import Block
 
 
-def from_file(file_path: str | Path, sample_rate: int = 44100) -> Block:
+def read(file_path: str | Path, sample_rate: int = 44100) -> Block:
     """Loads an audio file into a Block.
 
     Args:
