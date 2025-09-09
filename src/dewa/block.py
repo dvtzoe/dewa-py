@@ -26,17 +26,23 @@ class Block:
         else:
             self.samples = np.zeros(duration, dtype=self.dtype)
 
-    def __add__(self, other: Modifier | float | int | np.ndarray):
-        if isinstance(other, (int, float, np.ndarray)):
+    def __add__(self, other: Modifier | float | int | np.ndarray | Block):
+        if isinstance(other, (float, int, np.ndarray)):
             return Block(self.samples + other, dtype=self.dtype)
+        elif isinstance(other, Block):
+            resized_other = np.resize(other.samples, self.duration)
+            return Block(self.samples + resized_other, dtype=self.dtype)
         return other + self
 
-    def __mul__(self, other: Modifier | float | int | np.ndarray):
-        if isinstance(other, Modifier):
-            return other * self
-        return Block(self.samples * other, dtype=self.dtype)
+    def __mul__(self, other: Modifier | float | int | np.ndarray | Block) -> Block:
+        if isinstance(other, (float, int, np.ndarray)):
+            return Block(self.samples * other, dtype=self.dtype)
+        elif isinstance(other, Block):
+            resized_other = np.resize(other.samples, self.duration)
+            return Block(self.samples * resized_other, dtype=self.dtype)
+        return other * self
 
-    def mount(self, other_block: Block, mount_point: int = 0):
+    def mount(self, other_block: Block, mount_point: int = 0) -> Block:
         if self.duration < mount_point + other_block.duration:
             required_samples = mount_point + other_block.duration
             self.samples = np.resize(self, required_samples)
@@ -47,7 +53,7 @@ class Block:
 
         return self
 
-    def __array__(self):
+    def __array__(self) -> np.ndarray:
         return self.samples
 
     @property
