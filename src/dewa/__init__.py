@@ -1,5 +1,4 @@
-import io
-
+from . import io
 from .block import Block
 from .modifiers import (
     Echo,
@@ -8,6 +7,7 @@ from .modifiers import (
     Sine,
     Square,
 )
+from .utils import units
 
 __all__ = [
     "io",
@@ -17,4 +17,5 @@ __all__ = [
     "Sawtooth",
     "Sine",
     "Square",
+    "units",
 ]
