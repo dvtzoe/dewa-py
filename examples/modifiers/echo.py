@@ -1,21 +1,27 @@
 import os
 
-from dewa import Echo, from_file, write
+from dewa import Echo
+from dewa.io import read, write
 
+# Define the sample rate
 sample_rate = 44100
 
-main_block = from_file(
+# Read the main audio block from a sample file
+main_block = read(
     os.path.join(
         os.path.dirname(os.path.dirname(__file__)), "samples", "metal_pipe.opus"
     )
 )
 
-echo_effect = Echo(delay=5000, decay=0.6)
+# Create an Echo effect with a delay of 5000 ms and a decay factor of 0.6
+echo = Echo(delay=5000, decay=0.6)
 
-main_block += echo_effect
+# Apply the Echo effect to the main audio block
+main_block += echo
 
+# Write the modified audio block to an output file
 write(
     main_block,
-    os.path.join("out", "echo_output.wav"),
+    os.path.join("out", "echo.wav"),
     sample_rate=sample_rate,
 )
