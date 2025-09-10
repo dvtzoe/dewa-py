@@ -32,7 +32,8 @@ class Block:
         elif isinstance(other, Block):
             resized_other = np.resize(other.samples, self.duration)
             return Block(self.samples + resized_other, dtype=self.dtype)
-        return other + self
+        else:
+            return Block(self.samples + other._generate(self), dtype=self.dtype)
 
     def __mul__(self, other: Modifier | float | int | np.ndarray | Block) -> Block:
         if isinstance(other, (float, int, np.ndarray)):
@@ -40,7 +41,8 @@ class Block:
         elif isinstance(other, Block):
             resized_other = np.resize(other.samples, self.duration)
             return Block(self.samples * resized_other, dtype=self.dtype)
-        return other * self
+        else:
+            return Block(self.samples * other._generate(self), dtype=self.dtype)
 
     def mount(self, other_block: Block, mount_point: int = 0) -> Block:
         if self.duration < mount_point + other_block.duration:
@@ -54,8 +56,13 @@ class Block:
         return self
 
     def concat(self, other_block: Block | np.ndarray) -> Block:
-        concatenated_samples = np.concatenate((self.samples, other_block))
-        return Block(concatenated_samples, dtype=self.dtype)
+        if isinstance(other_block, Block):
+            concatenated_samples = np.concatenate((self.samples, other_block.samples))
+        else:
+            concatenated_samples = np.concatenate((self.samples, other_block))
+        print(concatenated_samples)
+        self.samples = concatenated_samples
+        return self
 
     def __array__(self) -> np.ndarray:
         return self.samples
@@ -63,3 +70,6 @@ class Block:
     @property
     def duration(self) -> int:
         return len(self.samples)
+
+    def __repr__(self) -> str:
+        return f"Block(duration={self.duration}, dtype={self.dtype}):\n{self.samples}"

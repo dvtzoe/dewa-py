@@ -23,13 +23,3 @@ class Modifier(ABC):
         Should return a numpy array of the same length as the block.
         """
         raise NotImplementedError
-
-    def __add__(self, other: Block) -> Block:
-        wave = self._generate(other)
-        other.samples += wave
-        return other
-
-    def __mul__(self, other: Block) -> Block:
-        wave = self._generate(other)
-        other.samples *= wave
-        return other
