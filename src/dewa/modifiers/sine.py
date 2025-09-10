@@ -15,8 +15,9 @@ class Sine(Modifier):
             containing frequency modulation data or another Modifier.
     """
 
-    def __init__(self, period: float | Block | Modifier):
+    def __init__(self, period: float | Block | Modifier, phase: float = 0.0):
         self.period = period
+        self.phase = phase
 
     @override
     def _generate(self, block: Block) -> np.ndarray:
@@ -27,5 +28,5 @@ class Sine(Modifier):
         else:
             t = np.linspace(0.0, block.duration, block.duration, endpoint=False)
             t /= self.period
-        wave = np.sin(2 * np.pi * t)
+        wave = np.sin(2 * np.pi * t + self.phase).astype(block.dtype)
         return wave

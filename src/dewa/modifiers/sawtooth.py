@@ -19,9 +19,13 @@ class Sawtooth(Modifier):
     """
 
     def __init__(
-        self, period: float | Block | Modifier, width: float | Block | Modifier = 1.0
+        self,
+        period: float | Block | Modifier,
+        phase: float = 0.0,
+        width: float | Block | Modifier = 1.0,
     ):
         self.period = period
+        self.phase = phase
         self.width = width
 
     @override
@@ -39,5 +43,5 @@ class Sawtooth(Modifier):
             width = self.width._generate(block)
         else:
             width = self.width
-        wave = signal.sawtooth(2 * np.pi * t, width)
+        wave = signal.sawtooth(2 * np.pi * t + self.phase, width)
         return wave
