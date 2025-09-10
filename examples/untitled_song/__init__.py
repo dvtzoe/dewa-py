@@ -1,33 +1,20 @@
 import os
 
-from dewa import Block, Sine
-from dewa.io import write
+import dewa as dw
 
 
 def main():
     # Global settings
     sample_rate = 48000
+    bpm = 100
+    notes = dw.constants.notes
+    s, Hz, beat = dw.utils.units(sample_rate, bpm)
+    print(
+        f"Sample Rate: {sample_rate} Hz, BPM: {bpm}, 1 beat = {beat:.2f} s, 1 s = {s} samples, 1 Hz = {Hz} samples"
+    )
+
     output_folder = "out"
     os.makedirs(output_folder, exist_ok=True)
-
-    # Note frequencies (in Hz)
-    notes = {
-        "C4": 261.63,
-        "D4": 293.66,
-        "E4": 329.63,
-        "F4": 349.23,
-        "G4": 392.00,
-        "A4": 440.00,
-        "B4": 493.88,
-        "C5": 523.25,
-        "D5": 587.33,
-        "E5": 659.25,
-        "F5": 698.46,
-        "G5": 783.99,
-        "A5": 880.00,
-        "B5": 987.77,
-        "C6": 1046.50,
-    }
 
     # Daisy Bell melody (simplified version)
     # Each tuple is (note, duration_in_beats)
@@ -59,33 +46,26 @@ def main():
     ]
 
     # Create main block
-    beat_duration = 0.6  # Duration of one beat in seconds
-    total_duration = sum(duration for _, duration in melody) * beat_duration
-    main_block = Block(duration=int(total_duration * sample_rate), dtype=float)
+    main_block = dw.Block()
 
     # Generate melody
-    current_time = 0.0
     for note_name, duration in melody:
         if note_name in notes:
             period = sample_rate / notes[note_name]
-            note_duration_seconds = duration * beat_duration
-            note_samples = int(note_duration_seconds * sample_rate)
+            note_samples = int(duration * beat)
 
             # Create note block
-            note_block = Block(duration=note_samples)
+            note_block = dw.Block(duration=note_samples)
 
             # Add sine wave for the note
-            note_block += Sine(period)
+            note_block += dw.Sine(period)
 
             # Mount the note to the main block
-            mount_point = int(current_time * sample_rate)
-            main_block.mount(note_block, mount_point=mount_point)
-
-        current_time += duration * beat_duration
+            main_block.concat(note_block)
 
     # Write to file
     output_path = os.path.join(output_folder, "song.wav")
-    write(main_block, output_path, sample_rate=sample_rate)
+    dw.io.write(main_block, output_path, sample_rate=sample_rate)
     print(f"Song melody saved to {output_path}")
 
 

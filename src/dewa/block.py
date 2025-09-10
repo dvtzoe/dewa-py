@@ -60,7 +60,6 @@ class Block:
             concatenated_samples = np.concatenate((self.samples, other_block.samples))
         else:
             concatenated_samples = np.concatenate((self.samples, other_block))
-        print(concatenated_samples)
         self.samples = concatenated_samples
         return self
 
