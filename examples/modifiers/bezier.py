@@ -14,8 +14,9 @@ main_block = Block(duration=3 * sample_rate)
 main_block += Sine(440)
 
 # Create a bezier curve envelope for smooth fade-in and fade-out
+# Using (x, y) coordinate tuples: (time_position, amplitude)
 # This creates an envelope that starts at 0, rises to full volume, then fades out
-bezier_envelope = Bezier(p0=0.0, p1=0.8, p2=0.8, p3=0.0)
+bezier_envelope = Bezier([(0.0, 0.0), (0.3, 0.8), (0.7, 0.8), (1.0, 0.0)])
 
 # Apply the Bezier envelope to the main audio block
 main_block *= bezier_envelope
