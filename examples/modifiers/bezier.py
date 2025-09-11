@@ -13,17 +13,51 @@ main_block = Block(duration=3 * sample_rate)
 # Add a sine wave
 main_block += Sine(440)
 
-# Create a bezier curve envelope for smooth fade-in and fade-out
-# Using (x, y) coordinate tuples: (time_position, amplitude)
-# This creates an envelope that starts at 0, rises to full volume, then fades out
-bezier_envelope = Bezier([(0.0, 0.0), (0.3, 0.8), (0.7, 0.8), (1.0, 0.0)])
+# Demonstrate different Bezier curve types
 
-# Apply the Bezier envelope to the main audio block
-main_block *= bezier_envelope
+# 1. Quadratic Bezier (3 points) - simple peak envelope
+print("Creating quadratic Bezier envelope...")
+quadratic_envelope = Bezier([(0.0, 0.0), (0.5, 1.0), (1.0, 0.0)])
 
-# Write the modified audio block to an output file
+# Apply the quadratic envelope to a copy of the main block
+quadratic_block = Block(main_block.samples.copy()) * quadratic_envelope
+
+# Write the quadratic envelope audio
 write(
-    main_block,
-    os.path.join("out", "bezier_envelope.wav"),
+    quadratic_block,
+    os.path.join("out", "bezier_quadratic.wav"),
     sample_rate=sample_rate,
 )
+
+# 2. Cubic Bezier (4 points) - smooth fade-in and fade-out
+print("Creating cubic Bezier envelope...")
+cubic_envelope = Bezier([(0.0, 0.0), (0.3, 0.8), (0.7, 0.8), (1.0, 0.0)])
+
+# Apply the cubic envelope to a copy of the main block
+cubic_block = Block(main_block.samples.copy()) * cubic_envelope
+
+# Write the cubic envelope audio
+write(
+    cubic_block,
+    os.path.join("out", "bezier_cubic.wav"),
+    sample_rate=sample_rate,
+)
+
+# 3. Higher-order Bezier (5 points) - complex envelope with multiple peaks
+print("Creating quintic Bezier envelope...")
+quintic_envelope = Bezier([(0.0, 0.0), (0.2, 0.6), (0.5, 1.0), (0.8, 0.4), (1.0, 0.0)])
+
+# Apply the quintic envelope to a copy of the main block
+quintic_block = Block(main_block.samples.copy()) * quintic_envelope
+
+# Write the quintic envelope audio
+write(
+    quintic_block,
+    os.path.join("out", "bezier_quintic.wav"),
+    sample_rate=sample_rate,
+)
+
+print("Generated three different Bezier curve examples:")
+print("- bezier_quadratic.wav (3 control points)")
+print("- bezier_cubic.wav (4 control points)")  
+print("- bezier_quintic.wav (5 control points)")

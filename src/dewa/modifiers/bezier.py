@@ -1,4 +1,5 @@
 from typing import override
+from math import comb
 
 import numpy as np
 
@@ -8,30 +9,42 @@ from .base import Modifier
 
 class Bezier(Modifier):
     """
-    Generates a bezier curve using cubic bezier interpolation with custom control points.
+    Generates a bezier curve with dynamic number of control points.
     
-    Uses a cubic bezier curve with 4 control points. Each control point is specified
-    as an (x, y) coordinate tuple where x represents the normalized time position
-    (0.0 to 1.0) and y represents the value at that time.
+    Supports bezier curves of any order:
+    - 2 points: Linear interpolation
+    - 3 points: Quadratic bezier curve  
+    - 4 points: Cubic bezier curve
+    - n points: n-1 order bezier curve
+    
+    Each control point is specified as an (x, y) coordinate tuple where x represents 
+    the normalized time position (0.0 to 1.0) and y represents the value at that time.
 
     Parameters:
-        points: list[tuple[float, float]] => List of 4 (x, y) coordinate tuples 
+        points: list[tuple[float, float]] => List of (x, y) coordinate tuples 
             representing the control points. x-values should be in range [0.0, 1.0]
-            and will be mapped to the block duration.
+            and will be mapped to the block duration. Minimum 2 points required.
     
-    Example:
-        # Create a smooth S-curve
-        bezier = Bezier([(0.0, 0.0), (0.0, 1.0), (1.0, 0.0), (1.0, 1.0)])
+    Examples:
+        # Linear interpolation (2 points)
+        linear = Bezier([(0.0, 0.0), (1.0, 1.0)])
         
-        # Create a custom envelope with peak at 2/3 duration
-        envelope = Bezier([(0.0, 0.0), (0.3, 0.8), (0.7, 0.8), (1.0, 0.0)])
+        # Quadratic bezier curve (3 points)
+        quadratic = Bezier([(0.0, 0.0), (0.5, 1.0), (1.0, 0.0)])
+        
+        # Cubic bezier curve (4 points)
+        cubic = Bezier([(0.0, 0.0), (0.3, 0.8), (0.7, 0.8), (1.0, 0.0)])
+        
+        # Higher order curve (5 points)
+        quintic = Bezier([(0.0, 0.0), (0.2, 0.5), (0.5, 1.0), (0.8, 0.5), (1.0, 0.0)])
     """
 
     def __init__(self, points: list[tuple[float, float]]):
-        if len(points) != 4:
-            raise ValueError("Bezier modifier requires exactly 4 control points")
+        if len(points) < 2:
+            raise ValueError("Bezier modifier requires at least 2 control points")
         
         self.points = points
+        self.n = len(points)  # Number of control points
         
         # Extract x and y coordinates
         self.x_coords = [point[0] for point in points]
@@ -57,25 +70,33 @@ class Bezier(Modifier):
             t_normalized = sample_indices / (block.duration - 1)
         
         # Map the custom x-coordinates to the normalized time range
-        # We need to create a parameter t that goes from 0 to 1 across the span 
-        # defined by our x-coordinates
         x_min, x_max = self.x_coords[0], self.x_coords[-1]
         
         # Map the normalized time to the range of our x-coordinates
         t_mapped = x_min + t_normalized * (x_max - x_min)
         
-        # For cubic Bezier, we need to reparameterize based on our x coordinates
-        # We'll interpolate to find the parameter t for each time point
-        t_param = np.interp(t_mapped, self.x_coords, [0.0, 1.0/3.0, 2.0/3.0, 1.0])
+        # Create evenly spaced parameter values for n control points
+        if self.n == 1:
+            param_values = [0.0]
+        else:
+            param_values = [i / (self.n - 1) for i in range(self.n)]
         
-        # Cubic bezier curve formula: B(t) = (1-t)³P0 + 3(1-t)²tP1 + 3(1-t)t²P2 + t³P3
-        one_minus_t = 1.0 - t_param
+        # Interpolate to find the parameter t for each time point
+        t_param = np.interp(t_mapped, self.x_coords, param_values)
         
-        curve = (
-            one_minus_t**3 * self.y_coords[0] +
-            3 * one_minus_t**2 * t_param * self.y_coords[1] +
-            3 * one_minus_t * t_param**2 * self.y_coords[2] +
-            t_param**3 * self.y_coords[3]
-        )
+        # General Bezier curve formula: B(t) = Σ(i=0 to n-1) [C(n-1,i) * (1-t)^(n-1-i) * t^i * Pi]
+        # where C(n-1,i) is the binomial coefficient
+        n_minus_1 = self.n - 1
+        curve = np.zeros_like(t_param, dtype=block.dtype)
+        
+        for i in range(self.n):
+            # Binomial coefficient C(n-1, i)
+            binomial_coeff = comb(n_minus_1, i)
+            
+            # Bernstein basis polynomial
+            basis = binomial_coeff * ((1.0 - t_param) ** (n_minus_1 - i)) * (t_param ** i)
+            
+            # Add contribution of this control point
+            curve += basis * self.y_coords[i]
         
         return curve.astype(block.dtype)
